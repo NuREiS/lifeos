@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>LifeOS</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LifeOS">
+<meta name="theme-color" content="#0b0b0f">
+<link rel="apple-touch-icon" href="icons/icon-180.svg">
+<link rel="icon" href="icons/icon-180.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header class="topbar">
+    <div class="topbar-date" id="topDate">—</div>
+    <div class="topbar-title" id="topTitle">Сегодня</div>
+  </header>
+
+  <main id="views">
+
+    <!-- ===================== TODAY ===================== -->
+    <section class="view" id="view-today" data-view="today">
+      <div class="card fast-card">
+        <div class="fast-card-head">
+          <span class="fast-state" id="fastState">Окно питания</span>
+          <span class="fast-times" id="fastTimes">—</span>
+        </div>
+        <div class="fast-big" id="fastBig">--:--</div>
+        <div class="fast-sub" id="fastSub">до конца окна</div>
+      </div>
+
+      <div class="card water-card">
+        <div class="card-row-head">
+          <h3>Вода</h3>
+          <span class="muted" id="waterCount">0 / 8</span>
+        </div>
+        <div class="water-dots" id="waterDots"></div>
+        <div class="btn-row">
+          <button class="btn ghost" id="waterMinus">−</button>
+          <button class="btn primary" id="waterPlus">+ стакан</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Блок сейчас</h3>
+          <span class="muted" id="nowStreak">🔥 0 дн.</span>
+        </div>
+        <div id="currentBlock" class="current-block">—</div>
+        <div class="schedule-list" id="todayScheduleList"></div>
+      </div>
+
+      <div class="badges-row" id="badgesRow"></div>
+    </section>
+
+    <!-- ===================== DIET ===================== -->
+    <section class="view" id="view-diet" data-view="diet" hidden>
+      <div class="card">
+        <h3>Окно питания (интервальное голодание)</h3>
+        <div class="field-row">
+          <label>Начало еды</label>
+          <input type="time" id="fastEndInput">
+        </div>
+        <div class="field-row">
+          <label>Конец еды</label>
+          <input type="time" id="fastStartInput">
+        </div>
+        <p class="hint">Едите только внутри этого окна. Остальное время — вода/чай без сахара.</p>
+      </div>
+
+      <div class="card">
+        <h3>Цель по воде</h3>
+        <div class="field-row">
+          <label>Стаканов в день</label>
+          <input type="number" id="waterGoalInput" min="1" max="20">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Приёмы пищи сегодня</h3>
+        </div>
+        <div class="check-list" id="mealChecklist"></div>
+        <p class="hint">Правило тарелки: ½ овощи, ¼ белок, ¼ сложные углеводы.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Чит-приём на этой неделе</h3>
+          <span class="muted" id="cheatStatus">не использован</span>
+        </div>
+        <button class="btn ghost full" id="cheatBtn">Отметить чит-приём</button>
+      </div>
+    </section>
+
+    <!-- ===================== SCHEDULE ===================== -->
+    <section class="view" id="view-schedule" data-view="schedule" hidden>
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Подъём</h3>
+          <span class="muted" id="wakeStreak">🔥 0 дн.</span>
+        </div>
+        <div class="field-row">
+          <label>Целевое время подъёма</label>
+          <input type="time" id="wakeTimeInput">
+        </div>
+        <button class="btn primary full" id="wakeUpBtn">Я проснулся</button>
+        <div class="hint" id="wakeStatus"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Блоки дня</h3>
+          <button class="btn ghost small" id="addBlockBtn">+ блок</button>
+        </div>
+        <div class="schedule-list editable" id="scheduleEditList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Отбой</h3>
+        <div class="field-row">
+          <label>Время выключения экранов</label>
+          <input type="time" id="shutdownInput">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FITNESS ===================== -->
+    <section class="view" id="view-fitness" data-view="fitness" hidden>
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Недельный план</h3>
+          <span class="muted" id="fitStreak">🔥 0 дн.</span>
+        </div>
+        <div class="week-grid" id="weekPlanGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-row-head">
+          <h3>Сегодня</h3>
+        </div>
+        <div class="today-log" id="todayLog"></div>
+      </div>
+
+      <div class="card">
+        <h3>Шаги</h3>
+        <div class="field-row">
+          <label>Шагов сегодня</label>
+          <input type="number" id="stepsInput" min="0" step="500">
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="stepsFill"></div></div>
+        <div class="hint" id="stepsHint"></div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS ===================== -->
+    <section class="view" id="view-stats" data-view="stats" hidden>
+      <div class="card">
+        <h3>Последние 7 дней</h3>
+        <div class="stats-grid" id="statsWeek"></div>
+      </div>
+      <div class="card">
+        <h3>Соблюдение дисциплины</h3>
+        <div class="stat-line"><span>Вода — цель достигнута</span><b id="statWater">0%</b></div>
+        <div class="stat-line"><span>Подъём вовремя</span><b id="statWake">0%</b></div>
+        <div class="stat-line"><span>Тренировки выполнены</span><b id="statFit">0%</b></div>
+      </div>
+      <div class="card">
+        <button class="btn ghost full danger" id="resetBtn">Сбросить все данные</button>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tabbar">
+    <button class="tab active" data-tab="today"><span class="tab-ico">☀️</span><span>Сегодня</span></button>
+    <button class="tab" data-tab="diet"><span class="tab-ico">🍽️</span><span>Питание</span></button>
+    <button class="tab" data-tab="schedule"><span class="tab-ico">🗓️</span><span>График</span></button>
+    <button class="tab" data-tab="fitness"><span class="tab-ico">💪</span><span>Спорт</span></button>
+    <button class="tab" data-tab="stats"><span class="tab-ico">📊</span><span>Статистика</span></button>
+  </nav>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
